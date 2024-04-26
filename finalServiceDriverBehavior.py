@@ -15,8 +15,7 @@ import datetime
 import json
 
 class SocketTrigger:
-    def save_image(image, event, target = ''):
-
+    def save_image(image, event, target = '', wsEvent = ''):
         print('Reconnecting')
         with connect("ws://103.190.28.211:3100?vehicle_id=MHKA6GJ3JRJ043647&device=jetson") as websocket:
         # with connect("ws://192.168.1.102:3100?vehicle_id=MHKA6GJ3JRJ043647&device=jetson") as websocket:
@@ -24,7 +23,7 @@ class SocketTrigger:
             with open("frame1.jpg", "rb") as image_file:
                 encoded_string = base64.b64encode(image_file.read())
                 jsonData = {
-                    "event" : "UPLOAD_IMAGE",
+                    "event" : wsEvent,
                     "vehicle_id" : "123",
                     "target" : target,
                     "data" : {
@@ -110,6 +109,7 @@ init_minute = init_time.minute - 1
 while cap.isOpened():
     success, frame = cap.read()
     image = frame
+    SocketTrigger.save_image(image, 'INIT', 'mobile', 'STREAM_IMAGE')
     if not success:
         break
 
@@ -151,7 +151,7 @@ while cap.isOpened():
 
                 if distance < distance_threshold:
                     cv2.putText(img, "Making a phone call", (300, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 4)
-                    SocketTrigger.save_image(image, 'DISTRACTION')
+                    SocketTrigger.save_image(image, 'DISTRACTION', '', 'UPLOAD_IMAGE')
                     # alert.play()
 
                 # Calculate the position of the text based on the original image size
@@ -245,7 +245,7 @@ while cap.isOpened():
             current_time = time.time()
             if(minuteCount != init_minute and is_behavior_danger):
                 init_minute = minuteCount
-                SocketTrigger.save_image(image, 'DISTRACTION')
+                SocketTrigger.save_image(image, 'DISTRACTION', '', 'UPLOAD_IMAGE')
             # Display the head pose direction
             p1 = (int(nose_2d[0]), int(nose_2d[1]))
             p2 = (int(nose_2d[0] + y_angle * 10), int(nose_2d[1] - x_angle * 10))
@@ -320,7 +320,7 @@ while cap.isOpened():
                     current_time = time.time()
                     if(minuteCount != init_minute):
                         init_minute = minuteCount
-                        SocketTrigger.save_image(image, 'DROWSINESS')
+                        SocketTrigger.save_image(image, 'DROWSINESS', '', 'UPLOAD_IMAGE')
 
 
     # Display the processed frame
