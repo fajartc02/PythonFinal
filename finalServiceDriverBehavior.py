@@ -17,14 +17,14 @@ import json
 class SocketTrigger:
     def save_image(image, event, target = '', wsEvent = ''):
         print('Reconnecting')
-        with connect("ws://103.190.28.211:3100?vehicle_id=MHKA6GJ3JRJ043647&device=jetson") as websocket:
-        # with connect("ws://192.168.1.102:3100?vehicle_id=MHKA6GJ3JRJ043647&device=jetson") as websocket:
+        with connect("ws://103.190.28.211:3100?vehicle_id=1HBGH1J787E&device=jetson") as websocket:
+        # with connect("ws://192.168.1.102:3100?vehicle_id=1HBGH1J787E&device=jetson") as websocket:
             cv2.imwrite("frame%d.jpg" % 1, image) 
             with open("frame1.jpg", "rb") as image_file:
                 encoded_string = base64.b64encode(image_file.read())
                 jsonData = {
                     "event" : wsEvent,
-                    "vehicle_id" : "123",
+                    "vehicle_id" : "1HBGH1J787E",
                     "target" : target,
                     "data" : {
                         "message": "Image Upload",
