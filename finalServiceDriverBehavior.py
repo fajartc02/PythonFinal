@@ -55,7 +55,7 @@ map_counter = 0
 flag = 0
 play_sound = False
 drowsy_detected = False
-last_alert_time = 0
+last_alert_time = 0 
 alert_delay = 1
 alert_count = 0
 
